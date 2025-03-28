@@ -168,3 +168,4 @@ C:\Users\rodrigoterra\Desktop\ASPNET\ASPNET\Exemplo4_Exercicio\bin\Debug\net8.0\
 C:\Users\rodrigoterra\Desktop\ASPNET\ASPNET\Exemplo4_Exercicio\bin\Debug\net8.0\runtimes\browser\lib\net8.0\System.Text.Encodings.Web.dll
 C:\Users\rodrigoterra\Desktop\ASPNET\ASPNET\Exemplo4_Exercicio\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
 C:\Users\rodrigoterra\Desktop\ASPNET\ASPNET\Exemplo4_Exercicio\obj\Debug\net8.0\Exemplo4.CE54D91E.Up2Date
+C:\Users\rodrigoterra\Desktop\ASPNET\ASPNET\Exemplo4_Exercicio\obj\Debug\net8.0\Exemplo4_Exercicio.sourcelink.json

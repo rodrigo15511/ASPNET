@@ -2,21 +2,24 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore; // Importa o namespace do Entity Framework
-using Microsoft.EntityFrameworkCore.Metadata.Internal; // Importa o namespace do Entity Framework
-
+using Exemplo4_Exercicio.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Exemplo4_Exercicio.database
 {
     public class AppDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
-        {
-        }
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-        // Vamos criar um DbSet para cada tabela do banco de dados
-        public DbSet<Model.Usuarios> Usuarios {get; set;}
-        public DbSet<Model.Maquina> Maquina {get; set;}
-        public DbSet<Model.Software> Software {get; set;}
+        public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<Maquina> Maquinas { get; set; }
+        public DbSet<Software> Softwares { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Usuario>().ToTable("usuarios");
+            modelBuilder.Entity<Maquina>().ToTable("maquina");
+            modelBuilder.Entity<Software>().ToTable("software");
+        }
     }
 }

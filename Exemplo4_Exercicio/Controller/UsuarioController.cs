@@ -1,67 +1,87 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations.Schema; // Importa o namespace do Entity Framework
-using System.ComponentModel.DataAnnotations; // Importa o namespace do Entity Framework
+using Microsoft.AspNetCore.Mvc;
+using Exemplo4_Exercicio.Models;
+using Exemplo4_Exercicio.database;
+using Microsoft.EntityFrameworkCore;
 
-using Exemplo4_Exercicio.Model; // Importa o namespace do Model
-using Exemplo4_Exercicio.database; // Importa o namespace do DbContext
-
-using Microsoft.EntityFrameworkCore; // Importa o namespace do Entity Framework
-
-// Agente vai utilizar a biblioteca MVC do ASP.NET
-using Microsoft.AspNetCore.Mvc; // O comando para instalar é: dotnet add package Microsoft.AspNetCore.Mvc
-
-namespace Exemplo4_Exercicio.Controller
+namespace Exemplo4_Exercicio.Controllers
 {
     [ApiController]
     [Route("[controller]")]
     public class UsuarioController : ControllerBase
     {
-        private readonly AppDbContext _context; //readonly é uma variável que só pode ser inicializada no construtor, o AppDbContext é a classe que representa o banco de dados
+        private readonly AppDbContext _context;
 
-        public UsuarioController(AppDbContext context) // Construtor que recebe o AppDbContext que é a classe que representa o banco de dados
+        public UsuarioController(AppDbContext context)
         {
             _context = context;
         }
 
-        [HttpGet] // Define que esse método é um GET
-        public async Task<IEnumerable<Usuarios>> Get() // Retorna uma lista de usuários
+        [HttpGet]
+        public async Task<IEnumerable<Usuario>> Get()
         {
-            // await é uma palavra chave que só pode ser usada em métodos que são marcados com async
-            return await _context.Usuarios.ToListAsync(); // Retorna todos os usuários do banco de dados
+            return await _context.Usuarios.ToListAsync();
         }
 
-        [HttpPost] // Define que esse método é um POST
-        public async Task<ActionResult<Usuarios>> Post([FromBody] Usuarios usuarios) // Task é um método assíncrono, ActionResult é o tipo de retorno do método, [FromBody] indica que o usuário vai ser passado no corpo da requisição
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Usuario>> GetById(int id)
         {
-            _context.Usuarios.Add(usuarios); // Adiciona o usuário no banco de dados
-            await _context.SaveChangesAsync(); // Salva as alterações no banco de dados
-            return usuarios; // Retorna o usuário que foi adicionado
+            var usuario = await _context.Usuarios.FindAsync(id);
+            if (usuario == null) return NotFound();
+            return usuario;
         }
 
-        [HttpPut("{id}")] // Define que esse método é um PUT, {id} é um parâmetro que vai ser passado na URL
-        public async Task<ActionResult<Usuarios>> Put(int id, [FromBody] Usuarios usuarios) // Task é um método assíncrono, ActionResult é o tipo de retorno do método, [FromBody] indica que o usuário vai ser passado no corpo da requisição
+        [HttpPost]
+        public async Task<ActionResult<Usuario>> Post([FromBody] Usuario usuario)
         {
-            var existente = await _context.Usuarios.FindAsync(id); // Procura o usuário no banco de dados
-            if (existente == null) return NotFound(); // Se não encontrar o usuário, retorna um erro 404
-            existente.nome = usuarios.nome; // Atualiza o nome do usuário
-            existente.email = usuarios.email; // Atualiza o email do usuário
-
-            await _context.SaveChangesAsync(); // Salva as alterações no banco de dados
-            return existente; // Retorna o usuário que foi atualizado
-
+            _context.Usuarios.Add(usuario);
+            await _context.SaveChangesAsync();
+            return usuario;
         }
 
-        [HttpDelete("{id}")] // Define que esse método é um DELETE, {id} é um parâmetro que vai ser passado na URL
-        public async Task<ActionResult> Delete(int id) // Task é um método assíncrono, ActionResult é o tipo de retorno do método
+        [HttpPut("{id}")]
+        public async Task<ActionResult<Usuario>> Put(int id, [FromBody] Usuario usuario)
         {
-            var existente = await _context.Usuarios.FindAsync(id); // Procura o usuário no banco de dados
-            if (existente == null) return NotFound(); // Se não encontrar o usuário, retorna um erro 404
-            _context.Usuarios.Remove(existente); // Remove o usuário do banco de dados
-            await _context.SaveChangesAsync(); // Salva as alterações no banco de dados
-            return NoContent(); // Retorna um status 204
+            var existente = await _context.Usuarios.FindAsync(id);
+            if (existente == null) return NotFound();
+
+            existente.Password = usuario.Password;
+            existente.Nome = usuario.Nome;
+            existente.Ramal = usuario.Ramal;
+            existente.Especialidade = usuario.Especialidade;
+
+            await _context.SaveChangesAsync();
+            return existente;
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var existente = await _context.Usuarios.FindAsync(id);
+            if (existente == null) return NotFound();
+
+            _context.Usuarios.Remove(existente);
+            await _context.SaveChangesAsync();
+            return NoContent();
         }
     }
 }
+
+
+// Segue o cascade para quando eu deletar um usuário, deletar as máquinas e softwares associados a ele:
+
+// ALTER TABLE maquina
+// DROP CONSTRAINT maquina_fk_usuario_fkey;
+
+// ALTER TABLE maquina
+// ADD CONSTRAINT maquina_fk_usuario_fkey
+// FOREIGN KEY (fk_usuario) REFERENCES usuarios(id_usuario)
+// ON DELETE CASCADE;
+
+
+// ALTER TABLE software
+// DROP CONSTRAINT software_fk_maquina_fkey;
+
+// ALTER TABLE software
+// ADD CONSTRAINT software_fk_maquina_fkey
+// FOREIGN KEY (fk_maquina) REFERENCES maquina(id_maquina)
+// ON DELETE CASCADE;

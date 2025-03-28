@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Exemplo4_Exercicio.Model;
+using Exemplo4_Exercicio.Models;
 using Exemplo4_Exercicio.database;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,13 +19,13 @@ namespace Exemplo4_Exercicio.Controllers
         [HttpGet]
         public async Task<IEnumerable<Maquina>> Get()
         {
-            return await _context.Maquina.ToListAsync();
+            return await _context.Maquinas.ToListAsync();
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Maquina>> GetById(int id)
         {
-            var maquina = await _context.Maquina.FindAsync(id);
+            var maquina = await _context.Maquinas.FindAsync(id);
             if (maquina == null) return NotFound();
             return maquina;
         }
@@ -33,7 +33,7 @@ namespace Exemplo4_Exercicio.Controllers
         [HttpPost]
         public async Task<ActionResult<Maquina>> Post([FromBody] Maquina maquina)
         {
-            _context.Maquina.Add(maquina);
+            _context.Maquinas.Add(maquina);
             await _context.SaveChangesAsync();
             return maquina;
         }
@@ -41,15 +41,15 @@ namespace Exemplo4_Exercicio.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<Maquina>> Put(int id, [FromBody] Maquina maquina)
         {
-            var existente = await _context.Maquina.FindAsync(id);
+            var existente = await _context.Maquinas.FindAsync(id);
             if (existente == null) return NotFound();
 
-            existente.tipo = maquina.tipo;
-            existente.velocidade = maquina.velocidade;
-            existente.harddisk = maquina.harddisk;
-            existente.placarede = maquina.placarede;
-            existente.memoriaram = maquina.memoriaram;
-            existente.fk_usuario = maquina.fk_usuario;
+            existente.Tipo = maquina.Tipo;
+            existente.Velocidade = maquina.Velocidade;
+            existente.HardDisk = maquina.HardDisk;
+            existente.PlacaRede = maquina.PlacaRede;
+            existente.MemoriaRam = maquina.MemoriaRam;
+            existente.FkUsuario = maquina.FkUsuario;
 
             await _context.SaveChangesAsync();
             return existente;
@@ -58,10 +58,10 @@ namespace Exemplo4_Exercicio.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var existente = await _context.Maquina.FindAsync(id);
+            var existente = await _context.Maquinas.FindAsync(id);
             if (existente == null) return NotFound();
 
-            _context.Maquina.Remove(existente);
+            _context.Maquinas.Remove(existente);
             await _context.SaveChangesAsync();
             return NoContent();
         }

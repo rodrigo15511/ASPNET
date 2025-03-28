@@ -2,22 +2,35 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
+using System.ComponentModel.DataAnnotations;
+
+
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Exemplo4_Exercicio.Model
+
+namespace Exemplo4_Exercicio.Models
 {
     [Table("usuarios")]
-    public class Usuarios
+    public class Usuario
     {
+        [Key]
         [Column("id_usuario")]
-        public int id {get; set;}
-        [Column("password")]
-        public string nome {get; set;}
+         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+
         [Column("nome_usuario")]
-        public string nomeusuario {get; set;}
+        public string Nome { get; set; }
+     
+        [Column("password")]
+        public string Password { get; set; }
+
         [Column("ramal")]
-        public string email {get; set;}
+        public int Ramal { get; set; }
+
         [Column("especialidade")]
-        public string especialidade {get; set;}
+        public string Especialidade { get; set; }
+
+        // public List<Maquina> Maquinas { get; set; }
     }
 }
